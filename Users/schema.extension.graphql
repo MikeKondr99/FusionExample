@@ -1,0 +1,4 @@
+
+extend type FileEntity {
+  user: UserEntity! @resolve(select: "userById(id: $userId)")
+}

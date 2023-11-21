@@ -1,0 +1,116 @@
+﻿schema {
+  query: Query
+  mutation: Mutation
+}
+
+"Information about the offset pagination."
+type CollectionSegmentInfo {
+  "Indicates whether more items exist following the set defined by the clients arguments."
+  hasNextPage: Boolean!
+  "Indicates whether more items exist prior the set defined by the clients arguments."
+  hasPreviousPage: Boolean!
+}
+
+type Mutation {
+  createUser(input: CreateUserInput!): UserEntity!
+  updateUser(input: UpdateUserInput!): UserEntity!
+  deleteUser(id: UUID!): UserEntity!
+}
+
+type Query {
+  users(skip: Int take: Int where: UserEntityFilterInput order: [UserEntitySortInput!]): UsersCollectionSegment
+  userById(id: UUID!): UserEntity
+}
+
+type UserEntity {
+  id: UUID!
+  name: String!
+  sex: Sex!
+}
+
+"A segment of a collection."
+type UsersCollectionSegment {
+  "Information to aid in pagination."
+  pageInfo: CollectionSegmentInfo!
+  "A flattened list of the items."
+  items: [UserEntity!]
+}
+
+input CreateUserInput {
+  name: String!
+  sex: Sex!
+}
+
+input SexOperationFilterInput {
+  eq: Sex
+  neq: Sex
+  in: [Sex!]
+  nin: [Sex!]
+}
+
+input StringOperationFilterInput {
+  and: [StringOperationFilterInput!]
+  or: [StringOperationFilterInput!]
+  eq: String
+  neq: String
+  contains: String
+  ncontains: String
+  in: [String]
+  nin: [String]
+  startsWith: String
+  nstartsWith: String
+  endsWith: String
+  nendsWith: String
+}
+
+input UpdateUserInput {
+  id: UUID!
+  name: String = ""
+  sex: Sex! = MALE
+}
+
+input UserEntityFilterInput {
+  and: [UserEntityFilterInput!]
+  or: [UserEntityFilterInput!]
+  id: UuidOperationFilterInput
+  name: StringOperationFilterInput
+  sex: SexOperationFilterInput
+}
+
+input UserEntitySortInput {
+  id: SortEnumType
+  name: SortEnumType
+  sex: SortEnumType
+}
+
+input UuidOperationFilterInput {
+  eq: UUID
+  neq: UUID
+  in: [UUID]
+  nin: [UUID]
+  gt: UUID
+  ngt: UUID
+  gte: UUID
+  ngte: UUID
+  lt: UUID
+  nlt: UUID
+  lte: UUID
+  nlte: UUID
+}
+
+enum Sex {
+  MALE
+  FEMALE
+}
+
+enum SortEnumType {
+  ASC
+  DESC
+}
+
+"The `@specifiedBy` directive is used within the type system definition language to provide a URL for specifying the behavior of custom scalar definitions."
+directive @specifiedBy("The specifiedBy URL points to a human-readable specification. This field will only read a result for scalar types." url: String!) on SCALAR
+
+directive @tag(name: String!) repeatable on SCHEMA | SCALAR | OBJECT | FIELD_DEFINITION | ARGUMENT_DEFINITION | INTERFACE | UNION | ENUM | ENUM_VALUE | INPUT_OBJECT | INPUT_FIELD_DEFINITION
+
+scalar UUID @specifiedBy(url: "https:\/\/tools.ietf.org\/html\/rfc4122")
