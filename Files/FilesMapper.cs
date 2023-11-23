@@ -14,5 +14,15 @@ namespace Files
 
         public static partial FileEntity CreateFile(CreateFileInput source);
 
+        public static byte[] FileToBytes(IFile file)
+        {
+            var stream = file.OpenReadStream();
+            using (MemoryStream ms = new MemoryStream())
+            {
+                stream.CopyTo(ms);
+                return ms.ToArray();
+            }
+        }
+
     }
 }

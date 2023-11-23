@@ -16,8 +16,11 @@ var gateway = builder.Services
     .AddFusionGatewayServer()
     .ConfigureFromFile("./gateway.fgp");
 
-gateway.CoreBuilder.AddErrorFilter<ErrorFilter>();
-gateway.CoreBuilder.AddApolloTracing();
+gateway.CoreBuilder
+    .AddErrorFilter<ErrorFilter>()
+    .AddType(new AnyType("UpperCaseStringType"))
+    .AddType(new AnyType("OgrnType"));
+
 
 var app = builder.Build();
 

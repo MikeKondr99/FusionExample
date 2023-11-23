@@ -14,6 +14,7 @@ services.AddDbContext<FilesContext>(
 services
     .AddGraphQLServer()
     .AddAutoTypes()
+    .AddUploadType()
     .RegisterDbContext<FilesContext>()
     .AddFiltering()
     .AddSorting()

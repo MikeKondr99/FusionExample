@@ -3,26 +3,12 @@
   mutation: Mutation
 }
 
-"Information about the offset pagination."
-type CollectionSegmentInfo {
-  "Indicates whether more items exist following the set defined by the clients arguments."
-  hasNextPage: Boolean!
-  "Indicates whether more items exist prior the set defined by the clients arguments."
-  hasPreviousPage: Boolean!
-}
-
 type FileEntity {
   id: UUID!
   name: String!
   userId: UUID!
-}
-
-"A segment of a collection."
-type FilesCollectionSegment {
-  "Information to aid in pagination."
-  pageInfo: CollectionSegmentInfo!
-  "A flattened list of the items."
-  items: [FileEntity!]
+  sign: UpperCaseStringType!
+  blob: [Byte!]!
 }
 
 type Mutation {
@@ -32,42 +18,16 @@ type Mutation {
 }
 
 type Query {
-  files(skip: Int take: Int where: FileEntityFilterInput order: [FileEntitySortInput!]): FilesCollectionSegment
+  files: [FileEntity!]!
   fileById(id: UUID!): FileEntity
 }
 
 input CreateFileInput {
+  sign: UpperCaseStringType!
+  ogrn: OgrnType!
   userId: UUID!
   name: String!
-}
-
-input FileEntityFilterInput {
-  and: [FileEntityFilterInput!]
-  or: [FileEntityFilterInput!]
-  id: UuidOperationFilterInput
-  name: StringOperationFilterInput
-  userId: UuidOperationFilterInput
-}
-
-input FileEntitySortInput {
-  id: SortEnumType
-  name: SortEnumType
-  userId: SortEnumType
-}
-
-input StringOperationFilterInput {
-  and: [StringOperationFilterInput!]
-  or: [StringOperationFilterInput!]
-  eq: String
-  neq: String
-  contains: String
-  ncontains: String
-  in: [String]
-  nin: [String]
-  startsWith: String
-  nstartsWith: String
-  endsWith: String
-  nendsWith: String
+  blob: Upload!
 }
 
 input UpdateFileInput {
@@ -75,29 +35,19 @@ input UpdateFileInput {
   name: String = ""
 }
 
-input UuidOperationFilterInput {
-  eq: UUID
-  neq: UUID
-  in: [UUID]
-  nin: [UUID]
-  gt: UUID
-  ngt: UUID
-  gte: UUID
-  ngte: UUID
-  lt: UUID
-  nlt: UUID
-  lte: UUID
-  nlte: UUID
-}
-
-enum SortEnumType {
-  ASC
-  DESC
-}
-
 "The `@specifiedBy` directive is used within the type system definition language to provide a URL for specifying the behavior of custom scalar definitions."
 directive @specifiedBy("The specifiedBy URL points to a human-readable specification. This field will only read a result for scalar types." url: String!) on SCALAR
 
 directive @tag(name: String!) repeatable on SCHEMA | SCALAR | OBJECT | FIELD_DEFINITION | ARGUMENT_DEFINITION | INTERFACE | UNION | ENUM | ENUM_VALUE | INPUT_OBJECT | INPUT_FIELD_DEFINITION
 
+"The `Byte` scalar type represents non-fractional whole numeric values. Byte can represent values between 0 and 255."
+scalar Byte
+
+scalar OgrnType
+
 scalar UUID @specifiedBy(url: "https:\/\/tools.ietf.org\/html\/rfc4122")
+
+"The `Upload` scalar type represents a file upload."
+scalar Upload
+
+scalar UpperCaseStringType

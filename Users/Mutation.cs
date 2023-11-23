@@ -1,4 +1,5 @@
-﻿using Users.Inputs;
+﻿using System.ComponentModel.DataAnnotations;
+using Users.Inputs;
 
 namespace Users
 {
@@ -49,7 +50,7 @@ namespace Users
             public Optional<string> Name { get; set; }
 
 
-            [DefaultValue(Users.Sex.Male)]
+            [GraphQLType("Sex")]
             public Optional<Sex> Sex { get; set; }
         }
 

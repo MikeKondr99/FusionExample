@@ -5,9 +5,6 @@ namespace Files;
 [QueryType]
 public static class Query
 {
-    [UseOffsetPaging]
-    [UseFiltering]
-    [UseSorting]
     public static IQueryable<FileEntity> GetFiles(FilesContext db)
     {
         return db.Files;

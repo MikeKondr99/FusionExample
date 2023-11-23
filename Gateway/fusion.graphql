@@ -1,7 +1,7 @@
 ﻿schema
   @fusion(version: 1)
-  @transport(subgraph: "files", group: "Fusion", location: "http:\/\/localhost:1002\/graphql", kind: "HTTP")
-  @transport(subgraph: "users", group: "Fusion", location: "http:\/\/localhost:1001\/graphql", kind: "HTTP") {
+  @transport(subgraph: "users", group: "Fusion", location: "http:\/\/localhost:1001\/graphql", kind: "HTTP")
+  @transport(subgraph: "files", group: "Fusion", location: "http:\/\/localhost:1002\/graphql", kind: "HTTP") {
   query: Query
   mutation: Mutation
 }
@@ -10,21 +10,13 @@ type Query {
   fileById(id: UUID!): FileEntity
     @variable(subgraph: "files", name: "id", argument: "id")
     @resolver(subgraph: "files", select: "{ fileById(id: $id) }", arguments: [ { name: "id", type: "UUID!" } ])
-  files(order: [FileEntitySortInput!] skip: Int take: Int where: FileEntityFilterInput): FilesCollectionSegment
-    @variable(subgraph: "files", name: "order", argument: "order")
-    @variable(subgraph: "files", name: "skip", argument: "skip")
-    @variable(subgraph: "files", name: "take", argument: "take")
-    @variable(subgraph: "files", name: "where", argument: "where")
-    @resolver(subgraph: "files", select: "{ files(order: $order, skip: $skip, take: $take, where: $where) }", arguments: [ { name: "order", type: "[FileEntitySortInput!]" }, { name: "skip", type: "Int" }, { name: "take", type: "Int" }, { name: "where", type: "FileEntityFilterInput" } ])
+  files: [FileEntity!]!
+    @resolver(subgraph: "files", select: "{ files }")
   userById(id: UUID!): UserEntity
     @variable(subgraph: "users", name: "id", argument: "id")
     @resolver(subgraph: "users", select: "{ userById(id: $id) }", arguments: [ { name: "id", type: "UUID!" } ])
-  users(order: [UserEntitySortInput!] skip: Int take: Int where: UserEntityFilterInput): UsersCollectionSegment
-    @variable(subgraph: "users", name: "order", argument: "order")
-    @variable(subgraph: "users", name: "skip", argument: "skip")
-    @variable(subgraph: "users", name: "take", argument: "take")
-    @variable(subgraph: "users", name: "where", argument: "where")
-    @resolver(subgraph: "users", select: "{ users(order: $order, skip: $skip, take: $take, where: $where) }", arguments: [ { name: "order", type: "[UserEntitySortInput!]" }, { name: "skip", type: "Int" }, { name: "take", type: "Int" }, { name: "where", type: "UserEntityFilterInput" } ])
+  users: [UserEntity!]!
+    @resolver(subgraph: "users", select: "{ users }")
 }
 
 type Mutation {
@@ -48,36 +40,16 @@ type Mutation {
     @resolver(subgraph: "users", select: "{ updateUser(input: $input) }", arguments: [ { name: "input", type: "UpdateUserInput!" } ])
 }
 
-"Information about the offset pagination."
-type CollectionSegmentInfo {
-  "Indicates whether more items exist following the set defined by the clients arguments."
-  hasNextPage: Boolean!
-    @source(subgraph: "files")
-    @source(subgraph: "users")
-  "Indicates whether more items exist prior the set defined by the clients arguments."
-  hasPreviousPage: Boolean!
-    @source(subgraph: "files")
-    @source(subgraph: "users")
-}
-
 type FileEntity {
+  blob: [Byte!]!
+    @source(subgraph: "files")
   id: UUID!
     @source(subgraph: "files")
   name: String!
     @source(subgraph: "files")
-  user: UserEntity!
-    @source(subgraph: "users")
+  sign: UpperCaseStringType!
+    @source(subgraph: "files")
   userId: UUID!
-    @source(subgraph: "files")
-}
-
-"A segment of a collection."
-type FilesCollectionSegment {
-  "A flattened list of the items."
-  items: [FileEntity!]
-    @source(subgraph: "files")
-  "Information to aid in pagination."
-  pageInfo: CollectionSegmentInfo!
     @source(subgraph: "files")
 }
 
@@ -90,60 +62,16 @@ type UserEntity {
     @source(subgraph: "users")
 }
 
-"A segment of a collection."
-type UsersCollectionSegment {
-  "A flattened list of the items."
-  items: [UserEntity!]
-    @source(subgraph: "users")
-  "Information to aid in pagination."
-  pageInfo: CollectionSegmentInfo!
-    @source(subgraph: "users")
-}
-
 input CreateFileInput {
+  blob: Upload!
   name: String!
+  sign: UpperCaseStringType!
   userId: UUID!
 }
 
 input CreateUserInput {
   name: String!
   sex: Sex!
-}
-
-input FileEntityFilterInput {
-  and: [FileEntityFilterInput!]
-  id: UuidOperationFilterInput
-  name: StringOperationFilterInput
-  or: [FileEntityFilterInput!]
-  userId: UuidOperationFilterInput
-}
-
-input FileEntitySortInput {
-  id: SortEnumType
-  name: SortEnumType
-  userId: SortEnumType
-}
-
-input SexOperationFilterInput {
-  eq: Sex
-  in: [Sex!]
-  neq: Sex
-  nin: [Sex!]
-}
-
-input StringOperationFilterInput {
-  and: [StringOperationFilterInput!]
-  contains: String
-  endsWith: String
-  eq: String
-  in: [String]
-  ncontains: String
-  nendsWith: String
-  neq: String
-  nin: [String]
-  nstartsWith: String
-  or: [StringOperationFilterInput!]
-  startsWith: String
 }
 
 input UpdateFileInput {
@@ -157,35 +85,6 @@ input UpdateUserInput {
   sex: Sex!
 }
 
-input UserEntityFilterInput {
-  and: [UserEntityFilterInput!]
-  id: UuidOperationFilterInput
-  name: StringOperationFilterInput
-  or: [UserEntityFilterInput!]
-  sex: SexOperationFilterInput
-}
-
-input UserEntitySortInput {
-  id: SortEnumType
-  name: SortEnumType
-  sex: SortEnumType
-}
-
-input UuidOperationFilterInput {
-  eq: UUID
-  gt: UUID
-  gte: UUID
-  in: [UUID]
-  lt: UUID
-  lte: UUID
-  neq: UUID
-  ngt: UUID
-  ngte: UUID
-  nin: [UUID]
-  nlt: UUID
-  nlte: UUID
-}
-
 enum Sex {
   FEMALE
     @source(subgraph: "users")
@@ -193,13 +92,12 @@ enum Sex {
     @source(subgraph: "users")
 }
 
-enum SortEnumType {
-  ASC
-    @source(subgraph: "files")
-    @source(subgraph: "users")
-  DESC
-    @source(subgraph: "files")
-    @source(subgraph: "users")
-}
+"The `Byte` scalar type represents non-fractional whole numeric values. Byte can represent values between 0 and 255."
+scalar Byte
+
+"The `Upload` scalar type represents a file upload."
+scalar Upload
+
+scalar UpperCaseStringType
 
 scalar UUID

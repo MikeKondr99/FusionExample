@@ -1,4 +1,6 @@
 ﻿using Files.Inputs;
+using HotChocolate.Language;
+using System.Reflection;
 
 namespace Files
 {
@@ -16,10 +18,12 @@ namespace Files
 
         public static FileEntity UpdateFile(UpdateFileInput input, FilesContext context)
         {
+
             var user = context.Files.Find(input.Id);
-            if (user is null) throw new KeyNotFoundException();
+            if (user is null) throw new KeyNotFoundException(user);
             FilesMapper.UpdateFile(input, user);
             context.SaveChanges();
+
             return user;
         }
 
@@ -37,8 +41,15 @@ namespace Files
     {
         public class CreateFileInput
         {
+            public required UpperCaseString Sign { get; set; }
+            
+            public required Ogrn Ogrn { get; set; }
+
             public Guid UserId { get; set; }
             public required string Name { get; set; }
+
+            [GraphQLType<NonNullType<UploadType>>]
+            public required IFile Blob { get; set; }
         }
 
         public class UpdateFileInput

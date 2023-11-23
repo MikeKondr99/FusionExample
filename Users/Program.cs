@@ -13,6 +13,7 @@ services.AddDbContext<UsersContext>(
 services
     .AddGraphQLServer()
     .AddAutoTypes()
+    .AddUploadType()
     .RegisterDbContext<UsersContext>()
     .AddFiltering()
     .AddSorting()
