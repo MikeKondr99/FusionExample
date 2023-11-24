@@ -7,7 +7,7 @@ namespace Users
     public static class Mutation
     {
 
-        public static UserEntity CreateUser(CreateUserInput input,UsersContext context)
+        public static User CreateUser(CreateUserInput input,UsersContext context)
         {
             var user = UsersMapper.CreateUser(input);
             context.Users.Add(user);
@@ -15,7 +15,7 @@ namespace Users
             return user;
         }
 
-        public static UserEntity UpdateUser(UpdateUserInput input,UsersContext context)
+        public static User UpdateUser(UpdateUserInput input,UsersContext context)
         {
             var user = context.Users.Find(input.Id);
             if (user is null) throw new KeyNotFoundException();
@@ -24,7 +24,7 @@ namespace Users
             return user;
         }
 
-        public static UserEntity DeleteUser(Guid id, UsersContext context)
+        public static User DeleteUser(Guid id, UsersContext context)
         {
             var user = context.Users.Find(id);
             if (user is null) throw new KeyNotFoundException();

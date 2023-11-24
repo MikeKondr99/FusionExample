@@ -8,7 +8,7 @@ namespace Files
     [MutationType]
     public static class Mutation
     {
-        public static FileEntity CreateFile(CreateFileInput input, FilesContext context)
+        public static File CreateFile(CreateFileInput input, FilesContext context)
         {
             var user = FilesMapper.CreateFile(input);
             context.Files.Add(user);
@@ -16,18 +16,18 @@ namespace Files
             return user;
         }
 
-        public static FileEntity UpdateFile(UpdateFileInput input, FilesContext context)
+        public static File UpdateFile(UpdateFileInput input, FilesContext context)
         {
 
             var user = context.Files.Find(input.Id);
-            if (user is null) throw new KeyNotFoundException(user);
+            if (user is null) throw new KeyNotFoundException();
             FilesMapper.UpdateFile(input, user);
             context.SaveChanges();
 
             return user;
         }
 
-        public static FileEntity DeleteFile(Guid id, FilesContext context)
+        public static File DeleteFile(Guid id, FilesContext context)
         {
             var user = context.Files.Find(id);
             if (user is null) throw new KeyNotFoundException();

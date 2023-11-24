@@ -3,21 +3,37 @@
   mutation: Mutation
 }
 
+"Information about the offset pagination."
+type CollectionSegmentInfo {
+  "Indicates whether more items exist following the set defined by the clients arguments."
+  hasNextPage: Boolean!
+  "Indicates whether more items exist prior the set defined by the clients arguments."
+  hasPreviousPage: Boolean!
+}
+
 type Mutation {
-  createUser(input: CreateUserInput!): UserEntity!
-  updateUser(input: UpdateUserInput!): UserEntity!
-  deleteUser(id: UUID!): UserEntity!
+  createUser(input: CreateUserInput!): User!
+  updateUser(input: UpdateUserInput!): User!
+  deleteUser(id: UUID!): User!
 }
 
 type Query {
-  users: [UserEntity!]!
-  userById(id: UUID!): UserEntity
+  users(skip: Int take: Int): UsersCollectionSegment
+  userById(id: UUID!): User
 }
 
-type UserEntity {
+type User {
   id: UUID!
   name: String!
   sex: Sex!
+}
+
+"A segment of a collection."
+type UsersCollectionSegment {
+  "Information to aid in pagination."
+  pageInfo: CollectionSegmentInfo!
+  "A flattened list of the items."
+  items: [User!]
 }
 
 input CreateUserInput {

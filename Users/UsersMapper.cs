@@ -6,13 +6,13 @@ namespace Users
     [Mapper]
     public static partial class UsersMapper
     {
-        public static void UpdateUser(UpdateUserInput source,UserEntity target)
+        public static void UpdateUser(UpdateUserInput source,User target)
         {
             if (source.Name.HasValue) target.Name = source.Name.Value;
             if (source.Sex.HasValue) target.Sex = source.Sex.Value;
         }
 
-        public static partial UserEntity CreateUser(CreateUserInput source);
+        public static partial User CreateUser(CreateUserInput source);
 
     }
 }

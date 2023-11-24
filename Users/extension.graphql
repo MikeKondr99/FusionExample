@@ -1,0 +1,4 @@
+extend type File {
+	@declare(variable: "userId", select: "userId")
+	@resolve(select: "userById(id:$userId)")
+}

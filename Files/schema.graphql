@@ -3,23 +3,30 @@
   mutation: Mutation
 }
 
-type FileEntity {
+type File {
   id: UUID!
   name: String!
   userId: UUID!
   sign: UpperCaseStringType!
   blob: [Byte!]!
+  user: User!
 }
 
 type Mutation {
-  createFile(input: CreateFileInput!): FileEntity!
-  updateFile(input: UpdateFileInput!): FileEntity!
-  deleteFile(id: UUID!): FileEntity!
+  createFile(input: CreateFileInput!): File!
+  updateFile(input: UpdateFileInput!): File!
+  deleteFile(id: UUID!): File!
 }
 
 type Query {
-  files: [FileEntity!]!
-  fileById(id: UUID!): FileEntity
+  files: [File!]!
+  fileById(id: UUID!): File
+  filesByUserid(userId: UUID!): [File!]!
+}
+
+type User {
+  id: UUID!
+  files: [File!]!
 }
 
 input CreateFileInput {

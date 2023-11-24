@@ -10,7 +10,7 @@ namespace Users
         Female
     }
 
-    public class UserEntity
+    public class User
     {
         public Guid Id { get; set; } = Guid.NewGuid();
         public required string Name { get; set; }
@@ -24,6 +24,6 @@ namespace Users
             Database.EnsureCreated();
         } 
 
-        public DbSet<UserEntity> Users => Set<UserEntity>();
+        public DbSet<User> Users => Set<User>();
     }
 }

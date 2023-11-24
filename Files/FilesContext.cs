@@ -1,12 +1,14 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using System.ComponentModel.DataAnnotations;
 using System.Data;
 using System.Linq.Expressions;
 
 namespace Files
 {
-    public class FileEntity
+    public class File
     {
+        [Key]
         public Guid Id { get; set; } = Guid.NewGuid();
         public required string Name { get; set; }
         public Guid UserId { get; set; }
@@ -21,11 +23,11 @@ namespace Files
             Database.EnsureCreated();
         }
 
-        public DbSet<FileEntity> Files => Set<FileEntity>();
+        public DbSet<File> Files => Set<File>();
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<FileEntity>().Property(f => f.Sign)
+            modelBuilder.Entity<File>().Property(f => f.Sign)
                 .HasConversion(new UpperCaseStringConverter());
             base.OnModelCreating(modelBuilder);
         }
